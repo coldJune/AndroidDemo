@@ -11,4 +11,5 @@
 		* *create a demo to fetch message from other system at regular time*
 		
 	* add MessagePushDemo
-		* *create a demo to receive some message and notify user on status bar and screen*	
+		* *create a demo to receive some message and notify user on status bar and screen*
+		*  *add a util class to obtain local ip and extral ip*

@@ -36,8 +36,8 @@ public class MessagePushService extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        connect = new ConnectThread();
-        connect.start();
+//        connect = new ConnectThread();
+//        connect.start();
         return super.onStartCommand(intent, flags, startId);
 
     }
@@ -57,7 +57,7 @@ public class MessagePushService extends Service{
             super.run();
             if(mSocket==null||mSocket.isClosed()){
                 try{
-                    mSocket=new DatagramSocket();
+                    mSocket=new DatagramSocket(19999);
                     address = InetAddress.getByName(URL_CONFIG.MESSAGEPUSH_URL);
                     mSocket.connect(address,URL_CONFIG.MESSAGEPUSH_PORT);
                     message = "确认在线";
