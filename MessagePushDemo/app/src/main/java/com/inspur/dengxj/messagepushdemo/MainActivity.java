@@ -26,14 +26,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         webView = findViewById(R.id.login);
         netWorkStateReceiver = new NetWorkStateReceiver();
-        webView.loadUrl("http://10.0.2.2:8080/MessagePushDemo/message");
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(netWorkStateReceiver,filter);
         IpObtainUtil.getNetIp(getApplicationContext());
-//        Intent intent = new Intent(getApplicationContext(), MessagePushService.class);
-//        startService(intent);
+       Intent intent = new Intent(getApplicationContext(), MessagePushService.class);
+        startService(intent);
+        webView.loadUrl("http://10.0.2.2:8080/MessagePushDemo/message?ip="+IpObtainUtil.getLocalIPAdress(getApplicationContext()));
+
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(netWorkStateReceiver);
+    }
 }

@@ -76,7 +76,6 @@ public class IpObtainUtil {
                     if(!result.isEmpty()){
                         jsonObject = new JSONObject(result);
                         String ip = jsonObject.getString("ip");
-                        Toast.makeText(context,"ip:"+ip,Toast.LENGTH_LONG).show();
                     }
                 } catch (MalformedURLException e) {
                     e.printStackTrace();

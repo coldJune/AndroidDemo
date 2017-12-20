@@ -23,7 +23,7 @@ import java.net.UnknownHostException;
 public class MessagePushService extends Service{
     private Intent intent;
     private DatagramSocket mSocket;
-    private String message ;
+    private String message ="app消息";
     private ConnectThread connect;
     private ReceiveThread mReceive;
     private SendThread mSend;
@@ -38,6 +38,8 @@ public class MessagePushService extends Service{
     public int onStartCommand(Intent intent, int flags, int startId) {
 //        connect = new ConnectThread();
 //        connect.start();
+        mReceive = new ReceiveThread();
+        mReceive.start();
         return super.onStartCommand(intent, flags, startId);
 
     }
@@ -57,7 +59,7 @@ public class MessagePushService extends Service{
             super.run();
             if(mSocket==null||mSocket.isClosed()){
                 try{
-                    mSocket=new DatagramSocket(19999);
+                    mSocket=new DatagramSocket(19991);
                     address = InetAddress.getByName(URL_CONFIG.MESSAGEPUSH_URL);
                     mSocket.connect(address,URL_CONFIG.MESSAGEPUSH_PORT);
                     message = "确认在线";
@@ -81,14 +83,14 @@ public class MessagePushService extends Service{
             if(msg.what == 2) {
                 mReceive.interrupt();
                 mReceive=null;
-                mReceive=new ReceiveThread();
-                mReceive.start();
+                mSend=new SendThread();
+                mSend.start();
             }
             if(msg.what==1){
-                    mSend.interrupt();
-                    mSend=null;
-                    mSend = new SendThread();
-                    mSend.start();
+                mSend.interrupt();
+                mSend=null;
+                mReceive = new ReceiveThread();
+                mReceive.start();
             }
             if(msg.what==3){
                 mSend = new SendThread();
@@ -107,16 +109,13 @@ public class MessagePushService extends Service{
             try {
                 if(mSocket ==null ||mSocket.isClosed())
                     return;
-
+                Log.v("信息:","进入发送方法");
                 byte[] datas = message.getBytes("UTF8");
                 DatagramPacket packet = new DatagramPacket(datas,datas.length,address,URL_CONFIG.MESSAGEPUSH_PORT);
                 mSocket.send(packet);
+                Log.v("信息:","发送完成");
                 mHandler.sendEmptyMessage(1);
-                mReceive =  new ReceiveThread();
-                mReceive.start();
-            }catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            }catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -130,14 +129,21 @@ public class MessagePushService extends Service{
         public void run() {
             super.run();
             if(mSocket == null||mSocket.isClosed()) {
-                return;
+                try {
+                    Log.v("信息:","初始化连接");
+                    mSocket=new DatagramSocket(URL_CONFIG.MESSAGEPUSH_PORT);
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
             }
             try {
                 byte[] datas = new byte[512];
-                DatagramPacket packet = new DatagramPacket(datas,datas.length,address,URL_CONFIG.MESSAGEPUSH_PORT);
+                DatagramPacket packet = new DatagramPacket(datas,datas.length);
+                Log.v("信息:","准备接受信息;address:"+address);
                 mSocket.receive(packet);
+                address = packet.getAddress();
                 String receiveMsg = new String(packet.getData()).trim();
-                Log.v("receviceMsg:",receiveMsg);
+                Log.v("信息:","接受信息为:"+receiveMsg);
                 mHandler.sendEmptyMessage(2);
             } catch (IOException e) {
                 e.printStackTrace();

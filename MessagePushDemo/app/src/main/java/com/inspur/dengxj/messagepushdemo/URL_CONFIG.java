@@ -6,5 +6,5 @@ package com.inspur.dengxj.messagepushdemo;
 
 public  class URL_CONFIG {
     public final static String MESSAGEPUSH_URL = "10.0.2.2";
-    public final static int MESSAGEPUSH_PORT = 19991;
+    public final static int MESSAGEPUSH_PORT = 12345;
 }
