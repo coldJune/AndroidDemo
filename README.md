@@ -16,3 +16,6 @@
 2. 2017/12/20
 	* modify MessagePushDemo
 	* *change android to be the server and send ip to service by url*
+3. 2018/5/15
+  * create WifiAndSingal
+	* *get wifi list and show in RecyclerView*

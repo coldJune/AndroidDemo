@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">WifiAndSingal</string>
+    <string name="title_wifi_detail">Wifi Detail</string>
+</resources>
